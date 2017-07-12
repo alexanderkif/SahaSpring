@@ -13,8 +13,8 @@ public class SafeController {
 
     @RequestMapping(method = RequestMethod.GET)
     public String safePage(ModelMap model){
-        model.addAttribute("links", "<a href=\"/\">Индекс</a><br/>" +
-                "<a href=\"/login\">Логин</a><br/>" +
+        model.addAttribute("links", "<a href=\"/\">Index</a><br/>" +
+                "<a href=\"/login\">Login</a><br/>" +
                 "<a href=\"/safe\">Safe</a><br/>");
         model.addAttribute("titl", "Safe");
         return "safe";

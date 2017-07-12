@@ -11,10 +11,10 @@ public class LoginController {
 
     @RequestMapping(method = RequestMethod.GET)
     public String indexPage(ModelMap model){
-        model.addAttribute("links", "<a href=\"/\">Индекс</a><br/>" +
-                "<a href=\"/login\">Логин</a><br/>" +
+        model.addAttribute("links", "<a href=\"/\">Index</a><br/>" +
+                "<a href=\"/login\">Login</a><br/>" +
                 "<a href=\"/safe\">Safe</a><br/>");
-        model.addAttribute("titl", "Логин");
+        model.addAttribute("titl", "Login");
         return "index";
     }
 }

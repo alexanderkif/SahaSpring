@@ -2,3 +2,5 @@
 /.idea/
 /target/
 /*.iml
+src/main/resources/
+src/main/webapp/WEB-INF/

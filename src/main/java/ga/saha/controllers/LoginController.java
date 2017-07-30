@@ -15,6 +15,7 @@ public class LoginController {
                 "<a href=\"/login\">Login</a><br/>" +
                 "<a href=\"/safe\">Safe</a><br/>");
         model.addAttribute("titl", "Login");
+
         return "index";
     }
 }

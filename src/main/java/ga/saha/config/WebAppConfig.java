@@ -1,19 +1,35 @@
 package ga.saha.config;
 
+import org.hibernate.SessionFactory;
+import org.hibernate.cfg.AvailableSettings;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.core.env.Environment;
+import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor;
+import org.springframework.jdbc.datasource.DriverManagerDataSource;
+import org.springframework.orm.hibernate5.HibernateTransactionManager;
+import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import org.springframework.web.servlet.view.JstlView;
 
+import javax.sql.DataSource;
+import java.util.Properties;
+
 @Configuration
 @EnableWebMvc
 @ComponentScan("ga.saha")
+@EnableTransactionManagement
+@PropertySource(value = { "classpath:database.properties" })
 public class WebAppConfig extends WebMvcConfigurerAdapter{
-    // Позволяет видеть все ресурсы в папке pages, такие как картинки, стили и т.п.
+
+    // Позволяет видеть все ресурсы в папке res, такие как картинки, стили и т.п.
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/res/**").addResourceLocations("/res/");
@@ -27,7 +43,51 @@ public class WebAppConfig extends WebMvcConfigurerAdapter{
         resolver.setPrefix("/pages/");
         resolver.setSuffix(".jsp");
         resolver.setViewClass(JstlView.class);
-
         return resolver;
+    }
+
+    @Autowired
+    private Environment env;
+    @Bean
+    public DataSource getDataSource() {
+        DriverManagerDataSource dataSource = new DriverManagerDataSource();
+        dataSource.setDriverClassName(env.getRequiredProperty("datasource.driver"));
+        dataSource.setUrl(env.getRequiredProperty("datasource.url"));
+        dataSource.setUsername(env.getRequiredProperty("datasource.username"));
+        dataSource.setPassword(env.getRequiredProperty("datasource.password"));
+        return dataSource;
+    }
+
+    @Bean
+    public LocalSessionFactoryBean getSessionFactory() {
+        LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
+        sessionFactory.setDataSource(getDataSource());
+        sessionFactory.setPackagesToScan(new String[] { "ga.saha" });
+        sessionFactory.setHibernateProperties(getHibernateProperties());
+        return sessionFactory;
+    }
+
+    @Bean
+    public PersistenceExceptionTranslationPostProcessor exceptionTranslation() {
+        return new PersistenceExceptionTranslationPostProcessor();
+    }
+
+    private Properties getHibernateProperties() {
+        Properties properties = new Properties();
+        properties.put(AvailableSettings.DIALECT, env.getRequiredProperty("hibernate.dialect"));
+        properties.put(AvailableSettings.SHOW_SQL, env.getRequiredProperty("hibernate.show_sql"));
+        properties.put(AvailableSettings.FORMAT_SQL, env.getRequiredProperty("hibernate.format_sql"));
+        properties.put(AvailableSettings.STATEMENT_BATCH_SIZE, env.getRequiredProperty("hibernate.batch.size"));
+        properties.put(AvailableSettings.HBM2DDL_AUTO, env.getRequiredProperty("hibernate.hbm2ddl.auto"));
+        properties.put(AvailableSettings.CURRENT_SESSION_CONTEXT_CLASS, env.getRequiredProperty("hibernate.current.session.context.class"));
+        return properties;
+    }
+
+    @Bean
+    @Autowired
+    public HibernateTransactionManager transactionManager(SessionFactory sessionFactory) {
+        HibernateTransactionManager txManager = new HibernateTransactionManager();
+        txManager.setSessionFactory(sessionFactory);
+        return txManager;
     }
 }

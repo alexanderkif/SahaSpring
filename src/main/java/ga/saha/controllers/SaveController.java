@@ -1,6 +1,6 @@
 package ga.saha.controllers;
 
-import ga.saha.entitys.UserEntity;
+import ga.saha.entitys.User;
 import ga.saha.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 @Controller
-@RequestMapping("/safe")
-public class SafeController {
+@RequestMapping("/save")
+public class SaveController {
 
     @Autowired
     UserService userService;
@@ -19,19 +19,20 @@ public class SafeController {
     public String safePage(ModelMap model){
         model.addAttribute("links", "<a href=\"/\">Index</a><br/>" +
                 "<a href=\"/login\">Login</a><br/>" +
-                "<a href=\"/safe\">Safe</a><br/>");
-        model.addAttribute("titl", "Safe");
+                "<li class=\"register\"><a href=\"/register\">Register</a></li>\n" +
+                "<a href=\"/safe\">Save</a><br/>");
+        model.addAttribute("titl", "Save");
 
-        UserEntity userEntity = new UserEntity();
-        userEntity.setFirstname("Alex1");
-        userEntity.setLastname("Kif1");
+        User user = new User();
+        user.setFirstname("Alex4");
+        user.setPassword("Kif4");
 
         // Save
-        userService.addNewUser(userEntity);
+        userService.addNewUser(user);
 
         // Get saved
-//        UserEntity user = userService.getUser((long) userEntity.getIdUser());
-//        System.out.println("getted user: " + user);
+        User user2 = userService.getUser(user.getIdUser());
+        System.out.println("getted user: " + user2);
 
         return "safe";
     }

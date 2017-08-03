@@ -1,7 +1,7 @@
 package ga.saha.services;
 
 import ga.saha.DAO.UserDao;
-import ga.saha.entitys.UserEntity;
+import ga.saha.entitys.User;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,15 +17,15 @@ public class UserServiceImpl implements UserService {
     private UserDao userDao;
 
     @Override
-    public UserEntity getUser(Long id) {
+    public User getUser(Integer id) {
         logger.debug("Getting user with id " + id);
         return userDao.findById(id);
     }
 
     @Override
     @Transactional(readOnly = false)
-    public void addNewUser(UserEntity userEntity) {
-        Integer id = (Integer) userDao.save(userEntity);
+    public void addNewUser(User user) {
+        Integer id = (Integer) userDao.save(user);
         logger.debug("Id of new user " + id);
     }
 }

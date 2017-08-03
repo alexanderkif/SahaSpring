@@ -1,6 +1,6 @@
 package ga.saha.DAO;
 
-import ga.saha.entitys.UserEntity;
+import ga.saha.entitys.User;
 import org.hibernate.Session;
 
 import java.io.Serializable;
@@ -12,8 +12,8 @@ public interface UserDao {
 
     Session getSession();
 
-    Serializable save(UserEntity userEntity);
+    Serializable save(User user);
 
-    UserEntity findById(final Serializable id);
+    User findById(final Serializable id);
 
 }

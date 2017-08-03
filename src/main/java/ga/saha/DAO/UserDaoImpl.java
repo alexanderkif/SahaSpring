@@ -1,6 +1,6 @@
 package ga.saha.DAO;
 
-import ga.saha.entitys.UserEntity;
+import ga.saha.entitys.User;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,12 +19,12 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public Serializable save(UserEntity userEntity) {
-        return getSession().save(userEntity);
+    public Serializable save(User user) {
+        return getSession().save(user);
     }
 
     @Override
-    public UserEntity findById(final Serializable id) {
-        return getSession().get(UserEntity.class, id);
+    public User findById(final Serializable id) {
+        return getSession().get(User.class, id);
     }
 }

@@ -1,10 +1,10 @@
 package ga.saha.services;
 
-import ga.saha.entitys.UserEntity;
+import ga.saha.entitys.User;
 
 public interface UserService {
 
-    UserEntity getUser(Long id);
+    User getUser(Integer id);
 
-    void addNewUser(UserEntity userEntity);
+    void addNewUser(User user);
 }

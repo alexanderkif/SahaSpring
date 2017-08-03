@@ -11,9 +11,11 @@ public class IndexController {
 
     @RequestMapping(method = RequestMethod.GET)
     public String indexPage(ModelMap model){
-        model.addAttribute("links", "<a href=\"/\">Index</a><br/>" +
-                "<a href=\"/login\">Login</a><br/>" +
-                "<a href=\"/safe\">Safe</a><br/>");
+        model.addAttribute("links",
+                "<li class=\"active\"><a href=\"/\">Home</a></li>\n" +
+                "<li><a href=\"/login\">Sign in</a></li>\n" +
+                "<li><a href=\"/register\">Register</a></li>");
+
         model.addAttribute("titl", "Index");
         return "index";
     }

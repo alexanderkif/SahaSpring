@@ -26,10 +26,10 @@
     </div>
   </div>
 </div>
-<div id="headerwrap">
+<div>
   <div class="container">
     <div class="row centered">
-      <div class="col-lg-8 col-lg-offset-2">
+      <div class="col-lg-8" id="headerwrap">
         <h1>Spring</h1>
         <h2>I try to use Spring</h2>
         <br/>

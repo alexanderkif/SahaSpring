@@ -62,7 +62,7 @@ public class WebAppConfig extends WebMvcConfigurerAdapter{
     public LocalSessionFactoryBean getSessionFactory() {
         LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
         sessionFactory.setDataSource(getDataSource());
-        sessionFactory.setPackagesToScan(new String[] { "ga.saha" });
+        sessionFactory.setPackagesToScan("ga.saha");
         sessionFactory.setHibernateProperties(getHibernateProperties());
         return sessionFactory;
     }

@@ -2,9 +2,6 @@ package ga.saha.entitys;
 
 import javax.persistence.*;
 
-/**
- * Created by ya on 30.07.2017.
- */
 @Entity
 @Table(name = "saves", schema = "public", catalog = "db5g9j38hag412")
 public class Save {

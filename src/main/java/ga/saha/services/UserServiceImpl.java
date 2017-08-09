@@ -28,7 +28,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Transactional(readOnly = false)
+    @Transactional()
     public void addNewUser(User user) {
         Integer id = (Integer) userDao.save(user);
         logger.debug("Id of new user " + id);

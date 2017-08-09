@@ -8,8 +8,6 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.util.Objects;
-
 @Controller
 @SessionAttributes(value = "userJSP")
 public class OutController {

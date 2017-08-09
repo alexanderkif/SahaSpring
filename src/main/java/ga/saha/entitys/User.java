@@ -23,7 +23,7 @@ public class User {
     }
 
     @Basic
-    @Column(name = "name", nullable = true, length = 15)
+    @Column(name = "name", length = 15)
     public String getName() {
         return name;
     }
@@ -33,7 +33,7 @@ public class User {
     }
 
     @Basic
-    @Column(name = "password", nullable = true, length = 15)
+    @Column(name = "password", length = 15)
     public String getPassword() {
         return password;
     }
@@ -43,7 +43,7 @@ public class User {
     }
 
     @Basic
-    @Column(name = "email", nullable = true, length = 30)
+    @Column(name = "email", length = 30)
     public String getEmail() {
         return email;
     }
@@ -53,7 +53,7 @@ public class User {
     }
 
     @Basic
-    @Column(name = "checked", nullable = true)
+    @Column(name = "checked")
     public Boolean getChecked() {
         return checked;
     }

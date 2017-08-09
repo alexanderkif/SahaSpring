@@ -27,7 +27,7 @@ public class RegisterController {
 
         String email = userJsp.getEmail();
         String pass = userJsp.getPassword();
-        String lform = "";
+        String lform;
         String sign = "<a href=\"/login\">Sign in</a>";
 
         if (Objects.equals(email, "") || Objects.equals(pass, "") || email==null || pass==null) {

@@ -4,97 +4,130 @@ import ga.saha.entitys.User;
 import ga.saha.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.servlet.ModelAndView;
 
-import javax.servlet.http.HttpServletRequest;
+import java.util.Objects;
 
 @Controller
-@RequestMapping("/register")
+@SessionAttributes(value = "userJSP")
 public class RegisterController {
 
-    @Autowired
-    private HttpServletRequest request;
+    private final UserService userService;
 
     @Autowired
-    UserService userService;
+    public RegisterController(UserService userService) {
+        this.userService = userService;
+    }
 
-    private String lform;
-    private String email;
-    private String pass;
-    private User user;
+    @RequestMapping("/register")
+    public ModelAndView indexPage(@ModelAttribute("userJSP") User userJsp){
 
-    @RequestMapping(method = RequestMethod.GET)
-    public String indexPage(ModelMap model){
+        String email = userJsp.getEmail();
+        String pass = userJsp.getPassword();
+        String lform = "";
+        String sign = "<a href=\"/login\">Sign in</a>";
 
-        try{
-            email = request.getParameter("email");
-            if (email.equals(null)) email="";
-        } catch (Exception e){
-            email = "";
-        }
-        try{
-            pass = request.getParameter("pass");
-            if (pass.equals(null)) pass="";
-        } catch (Exception e){
-            pass = "";
-        }
-        try{
-            user = (User) model.get(user);
-        } catch (Exception e){
-            user = null;
-        }
-
-        if (email.equals("") || pass.equals("")) {
+        if (Objects.equals(email, "") || Objects.equals(pass, "") || email==null || pass==null) {
+            //Register form
             lform = "<div class=\"container fo\">\n" +
-                    "  <form action=\"/register\" method=\"GET\" name=\"model\">\n" +
+                    "  <form action=\"/register\" method=\"POST\" name=\"model\">\n" +
                     "    <div class=\"form-group row\">\n" +
                     "      <label class=\"col-sm-4 col-form-label col-sm-offset-2 lefted\"><h3>New user</h3></label>\n" +
                     "    </div>\n" +
                     "    <div class=\"form-group row\">\n" +
                     "      <label for=\"email\" class=\"col-sm-4 col-form-label col-sm-offset-2 lefted\">email</label>\n" +
                     "      <div class=\"col-sm-7 col-sm-offset-2\">\n" +
-                    "        <input type=\"email\" class=\"form-control\" id=\"email\" placeholder=\"Email\" " +
-                    "        value=\"" + email +"\">\n" +
+                    "        <input type=\"email\" class=\"form-control\" id=\"email\" name=\"email\" placeholder=\"Email\">\n" +
                     "      </div>\n" +
                     "    </div>\n" +
                     "    <div class=\"form-group row\">\n" +
-                    "      <label for=\"pass\" class=\"col-sm-4 col-sm-offset-2 col-form-label lefted\">password</label>\n" +
+                    "      <label for=\"password\" class=\"col-sm-4 col-sm-offset-2 col-form-label lefted\">password</label>\n" +
                     "      <div class=\"col-sm-offset-2 col-sm-7\">\n" +
-                    "        <input type=\"password\" class=\"form-control\" id=\"pass\" placeholder=\"Password\" " +
-                    "         value=\"" + pass +"\">\n" +
+                    "        <input type=\"password\" class=\"form-control\" id=\"password\" name=\"password\" placeholder=\"Password\">\n" +
                     "      </div>\n" +
                     "    </div>\n" +
                     "    <div class=\"form-group row\">\n" +
                     "      <div class=\"offset-sm-2 col-sm-7\">\n" +
-                    "        <button type=\"submit\" class=\"btn btn-primary\">Sign in</button>\n" +
+                    "        <button type=\"submit\" class=\"btn btn-primary\">Register</button>\n" +
                     "      </div>\n" +
                     "    </div>\n" +
                     "  </form>\n" +
                     "</div>";
         }
         else{
-            user = new User();
-            user.setEmail(email);
-            user.setPassword(pass);
+            User checkUser;
             try{
-                userService.addNewUser(user);
-                lform = "<p>New user " + email + " add successful</p>\n";
+                checkUser = userService.getUserByEmail(email);
             }catch (Exception e){
-                lform = "<p>New user " + email + " is not added</p>\n";
+                checkUser = null;
             }
-
+            if (checkUser!=null && Objects.equals(checkUser.getEmail(), email)){
+                //User exist form
+                lform = "<div class=\"container fo\">\n" +
+                        "  <form action=\"/register\" method=\"POST\" name=\"model\">\n" +
+                        "    <div class=\"form-group row\">\n<br>" +
+                        "      <label for=\"email\" class=\"col-sm-6 col-form-label col-sm-offset-3 centered\">User " + checkUser.getName() + " is exist</label>\n" +
+                        "    <input type=\"hidden\" id=\"email\" name=\"email\" value=\"\"></div>\n" +
+                        "    <div class=\"form-group row\">\n" +
+                        "      <div class=\"col-sm-offset-3 col-sm-6 centered\">\n" +
+                        "        <button type=\"submit\" class=\"btn btn-primary\">Continue</button>\n" +
+                        "      </div>\n" +
+                        "    </div>\n" +
+                        "  </form>\n" +
+                        "</div>";
+            }
+            else{
+                userJsp = new User();
+                userJsp.setEmail(email);
+                userJsp.setPassword(pass);
+                userJsp.setName(email.split("@")[0]); //Lets simply use nikname as name
+                try{
+                    userService.addNewUser(userJsp);
+                    sign = "<a href=\"/out\">Sign out</a></form>";
+                    //User was added successful form
+                    lform = "<div class=\"container fo\">\n" +
+                            "  <form action=\"/login\" method=\"POST\" name=\"model\">\n" +
+                            "    <div class=\"form-group row\">\n<br>" +
+                            "      <label for=\"email\" class=\"col-sm-6 col-form-label col-sm-offset-3 centered\">New user " + email + " was added successful</label>\n" +
+                            "    </div>\n" +
+                            "    <div class=\"form-group row\">\n" +
+                            "      <div class=\"col-sm-offset-3 col-sm-6 centered\">\n" +
+                            "        <button type=\"submit\" class=\"btn btn-primary\">Sign in</button>\n" +
+                            "      </div>\n" +
+                            "    </div>\n" +
+                            "  </form>\n" +
+                            "</div>";
+                }catch (Exception e){
+                    //User is not added form
+                    lform = "<div class=\"container fo\">\n" +
+                            "  <form action=\"/register\" method=\"POST\" name=\"model\">\n" +
+                            "    <div class=\"form-group row\">\n<br>" +
+                            "      <label for=\"email\" class=\"col-sm-6 col-form-label col-sm-offset-3 centered\">New user " + email + " is not added</label>\n" +
+                            "    <input type=\"hidden\" id=\"email\" name=\"email\" value=\"\"></div>\n" +
+                            "    <div class=\"form-group row\">\n" +
+                            "      <div class=\"col-sm-offset-3 col-sm-6 centered\">\n" +
+                            "        <button type=\"submit\" class=\"btn btn-primary\">Continue</button>\n" +
+                            "      </div>\n" +
+                            "    </div>\n" +
+                            "  </form>\n" +
+                            "</div>";
+                }
+            }
         }
 
-        model.addAttribute("links",
-                "<li><a href=\"/\">Home</a></li>\n" +
-                "<li><a href=\"/login\">Sign in</a></li>\n" +
-                "<li class=\"active\"><a href=\"/register\">Register</a></li>\n");
-        model.addAttribute("lform", lform);
-        model.addAttribute("titl", "Add new user");
-        model.addAttribute("user", user);
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("index");
+        modelAndView.addObject("links",
+                                "<li><a href=\"/\">Home</a></li>\n" +
+                                "<li>" + sign + "</li>\n" +
+                                "<li class=\"active\"><a href=\"/register\">Register</a></li>\n");
+        modelAndView.addObject("lform", lform);
+        modelAndView.addObject("titl", "Add new user");
+        modelAndView.addObject("userJSP", userJsp);
 
-        return "index";
+        return modelAndView;
     }
 }

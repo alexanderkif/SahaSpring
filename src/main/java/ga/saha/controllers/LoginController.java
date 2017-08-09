@@ -1,49 +1,52 @@
 package ga.saha.controllers;
 
 import ga.saha.entitys.User;
+import ga.saha.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.servlet.ModelAndView;
 
-import javax.servlet.http.HttpServletRequest;
+import java.util.Objects;
 
 @Controller
-@RequestMapping("/login")
+@SessionAttributes(value = "userJSP")
 public class LoginController {
 
+    private final UserService userService;
+
     @Autowired
-    private HttpServletRequest request;
+    public LoginController(UserService userService) {
+        this.userService = userService;
+    }
+
 
     private String lform;
-    private String email;
-    private String pass;
 
-    @RequestMapping(method = RequestMethod.GET)
-    public String indexPage(ModelMap model){
+    @RequestMapping("/login")
+    public ModelAndView indexPage(@ModelAttribute("userJSP") User userJsp){
 
-        try{
-            email = request.getParameter("email");
-            pass = request.getParameter("pass");
-        } catch (Exception e){
-            System.out.println("No parameters");
-        }
+        String email = userJsp.getEmail();
+        String pass = userJsp.getPassword();
+        String sign = "<a href=\"/login\">Sign in</a>";
 
-        if (email==null || pass==null) {
+        if (Objects.equals(email, "") || Objects.equals(pass, "") || email==null || pass==null) {
+            //Login form
             lform = "<div class=\"container fo\"><br>\n" +
-                    "  <form action=\"/login\" method=\"GET\" name=\"model\">\n" +
+                    "  <form action=\"/login\" method=\"POST\" name=\"model\">\n" +
                     "    <div class=\"form-group row\">\n" +
                     "      <label for=\"email\" class=\"col-sm-2 col-form-label col-sm-offset-2 lefted\">Email</label>\n" +
                     "      <div class=\"col-sm-7 col-sm-offset-2\">\n" +
-                    "        <input type=\"email\" class=\"form-control\" id=\"email\" placeholder=\"Email\">\n" +
+                    "        <input type=\"email\" class=\"form-control\" id=\"email\" name=\"email\" placeholder=\"Email\">\n" +
                     "      </div>\n" +
                     "    </div>\n" +
                     "    <div class=\"form-group row\">\n" +
-                    "      <label for=\"pass\" class=\"col-sm-2 col-sm-offset-2 col-form-label lefted\">Password</label>\n" +
+                    "      <label for=\"password\" class=\"col-sm-2 col-sm-offset-2 col-form-label lefted\">Password</label>\n" +
                     "      <div class=\"col-sm-offset-2 col-sm-7\">\n" +
-                    "        <input type=\"password\" class=\"form-control\" id=\"pass\" placeholder=\"Password\">\n" +
-                    "      </div>\n" +
+                    "        <input type=\"password\" class=\"form-control\" id=\"password\" name=\"password\" placeholder=\"Password\">\n" +
+                    "      <input type=\"hidden\" name=\"name\"></div>\n" +
                     "    </div>\n" +
                     "    <div class=\"form-group row\">\n" +
                     "      <div class=\"offset-sm-2 col-sm-7\">\n" +
@@ -54,16 +57,42 @@ public class LoginController {
                     "</div>";
         }
         else{
-            lform = "<p>User " + email + " authorized</p>\n";
+            User checkUser;
+            try{
+                checkUser = userService.getUserByEmail(email);
+            }catch (Exception e){
+                checkUser = null;
+            }
+            if (checkUser!=null && Objects.equals(checkUser.getEmail(), email) && Objects.equals(checkUser.getPassword(), pass)) {
+                userJsp = checkUser;
+                sign = "<a href=\"/out\">Sign out</a></form>";
+                //Hello User
+                lform = "<div class=\"container fo\">\n" +
+                        "  <form action=\"/login\" method=\"POST\" name=\"model\">\n" +
+                        "    <div class=\"form-group row\">\n<br>" +
+                        "      <label for=\"email\" class=\"col-sm-6 col-form-label col-sm-offset-3 centered\">Hello " +
+                        userJsp.getName() + "!<br>You can do your job</label>\n" +
+                        "    </div>\n" +
+                        "    <div class=\"form-group row\">\n" +
+                        "      <div class=\"col-sm-offset-3 col-sm-6 centered\">\n" +
+                        "        <button type=\"submit\" class=\"btn btn-primary\">Continue</button>\n" +
+                        "      </div>\n" +
+                        "    </div>\n" +
+                        "  </form>\n" +
+                        "</div>";
+            }
         }
 
-        model.addAttribute("links",
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("index");
+        modelAndView.addObject("links",
                 "<li><a href=\"/\">Home</a></li>\n" +
-                "<li class=\"active\"><a href=\"/login\">Sign in</a></li>\n" +
-                "<li class=\"register\"><a href=\"/register\">Register</a></li>\n");
-        model.addAttribute("lform", lform);
-        model.addAttribute("titl", "Login");
+                "<li class=\"active\">" + sign + "</li>\n" +
+                "<li><a href=\"/register\">Register</a></li>\n");
+        modelAndView.addObject("lform", lform);
+        modelAndView.addObject("titl", "Login");
+        modelAndView.addObject("userJSP", userJsp);
 
-        return "index";
+        return modelAndView;
     }
 }

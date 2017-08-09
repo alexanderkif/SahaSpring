@@ -4,7 +4,7 @@ import ga.saha.entitys.User;
 
 public interface UserService {
 
-    User getUser(Integer id);
+    User getUserByEmail(String email);
 
     void addNewUser(User user);
 }

@@ -2,14 +2,11 @@ package ga.saha.entitys;
 
 import javax.persistence.*;
 
-/**
- * Created by ya on 30.07.2017.
- */
 @Entity
 @Table(name = "users", schema = "public", catalog = "db5g9j38hag412")
 public class User {
     private int idUser;
-    private String firstname;
+    private String name;
     private String password;
     private String email;
     private Boolean checked;
@@ -26,13 +23,13 @@ public class User {
     }
 
     @Basic
-    @Column(name = "firstname", nullable = true, length = 15)
-    public String getFirstname() {
-        return firstname;
+    @Column(name = "name", nullable = true, length = 15)
+    public String getName() {
+        return name;
     }
 
-    public void setFirstname(String firstname) {
-        this.firstname = firstname;
+    public void setName(String name) {
+        this.name = name;
     }
 
     @Basic
@@ -69,7 +66,7 @@ public class User {
     public String toString() {
         return "User{" +
                 "idUser=" + idUser +
-                ", firstname='" + firstname + '\'' +
+                ", name='" + name + '\'' +
                 ", password='" + password + '\'' +
                 ", email='" + email + '\'' +
                 ", checked=" + checked +

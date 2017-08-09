@@ -24,15 +24,15 @@ public class SaveController {
         model.addAttribute("titl", "Save");
 
         User user = new User();
-        user.setFirstname("Alex4");
+        user.setName("Alex4");
         user.setPassword("Kif4");
 
         // Save
         userService.addNewUser(user);
 
         // Get saved
-        User user2 = userService.getUser(user.getIdUser());
-        System.out.println("getted user: " + user2);
+//        User user2 = userService.getUser(user.getIdUser());
+//        System.out.println("getted user: " + user2);
 
         return "safe";
     }

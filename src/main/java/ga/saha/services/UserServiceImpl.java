@@ -7,19 +7,24 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+
 @Service
 @Transactional(readOnly = true)
 public class UserServiceImpl implements UserService {
 
-    final static Logger logger = Logger.getLogger(UserService.class);
+    private final static Logger logger = Logger.getLogger(UserService.class);
+
+    private final UserDao userDao;
 
     @Autowired
-    private UserDao userDao;
+    public UserServiceImpl(UserDao userDao) {
+        this.userDao = userDao;
+    }
 
     @Override
-    public User getUser(Integer id) {
-        logger.debug("Getting user with id " + id);
-        return userDao.findById(id);
+    public User getUserByEmail(String email) {
+        logger.debug("Getting user with email " + email);
+        return userDao.findByEmail(email);
     }
 
     @Override

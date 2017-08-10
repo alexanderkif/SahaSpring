@@ -13,9 +13,7 @@ import org.springframework.web.servlet.ModelAndView;
 public class OutController {
 
     @RequestMapping(value = "/out")
-    public ModelAndView main(@ModelAttribute("userJSP") User user, SessionStatus sessionStatus) {
-        //sessionStatus.setComplete();
-        //return new ModelAndView("index", "userJSP", new User());
+    public ModelAndView main(@ModelAttribute("userJSP") User user) {
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("index");
         modelAndView.addObject("links",

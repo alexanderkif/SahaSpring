@@ -143,3 +143,9 @@ hr {
     border-style: solid;
     width: 70%;
 }
+
+@media (min-width: 1600px) {
+	.container {
+		width: 1570px;
+	}
+}

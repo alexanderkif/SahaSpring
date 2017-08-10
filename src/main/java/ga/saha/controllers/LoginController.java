@@ -68,7 +68,7 @@ public class LoginController {
                 sign = "<a href=\"/out\">Sign out</a></form>";
                 //Hello User
                 lform = "<div class=\"container fo\">\n" +
-                        "  <form action=\"/login\" method=\"POST\" name=\"model\">\n" +
+                        "  <form action=\"/\" method=\"POST\" name=\"model\">\n" +
                         "    <div class=\"form-group row\">\n<br>" +
                         "      <label for=\"email\" class=\"col-sm-6 col-form-label col-sm-offset-3 centered\">Hello " +
                         userJsp.getName() + "!<br>You can do your job</label>\n" +

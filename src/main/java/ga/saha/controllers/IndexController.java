@@ -17,6 +17,12 @@ public class IndexController {
 
     private final UserService userService;
     private String lform;
+    private String email;
+    private String pass;
+    private final String in = "<a href=\"/login\">Sign in</a>";
+    private String sign = in;
+    private String titl;
+    private String li;
 
     @Autowired
     public IndexController(UserService userService) {
@@ -30,40 +36,26 @@ public class IndexController {
 
     @RequestMapping(value = "/")
     public ModelAndView indexPageGet(@ModelAttribute("userJSP") User userJsp) {
-
-        String email = userJsp.getEmail();
-        String pass = userJsp.getPassword();
-        String sign = "<a href=\"/login\">Sign in</a>";
-
-        User checkUser;
-        try{
-            checkUser = userService.getUserByEmail(email);
-        }catch (Exception e){
-            checkUser = null;
-        }
+        email = userJsp.getEmail();
+        pass = userJsp.getPassword();
+        User checkUser = getCheckUser();
         if (checkUser!=null && Objects.equals(checkUser.getEmail(), email) && Objects.equals(checkUser.getPassword(), pass)) {
-            sign = "<a href=\"/out\">Sign out</a></form>";
+            userJsp = checkUser;
+            sign = "<a href=\"/out\">Sign out (" + userJsp.getName() + ")</a>";
         }
-
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("index");
-        modelAndView.addObject("links",
-                        "<li class=\"active\"><a href=\"/\">Home</a></li>\n" +
-                        "<li>" + sign + "</li>\n" +
-                        "<li><a href=\"/register\">Register</a></li>");
-        modelAndView.addObject("titl", "Index");
-        if (Objects.equals(userJsp.getEmail(), "") || userJsp.getEmail()==null){
-            modelAndView.addObject("userJSP", new User());
-        }
-        return modelAndView;
+        lform = "";
+        titl = "Index";
+        li =    "<li class=\"active\"><a href=\"/\">Home</a></li>\n" +
+                "<li>" + sign + "</li>\n" +
+                "<li><a href=\"/register\">Register</a></li>\n";
+        return getModelAndView(userJsp);
     }
 
     @RequestMapping("/login")
     public ModelAndView indexPage(@ModelAttribute("userJSP") User userJsp){
-
-        String email = userJsp.getEmail();
-        String pass = userJsp.getPassword();
-        String sign = "<a href=\"/login\">Sign in</a>";
+        email = userJsp.getEmail();
+        pass = userJsp.getPassword();
+        sign = in;
 
         if (Objects.equals(email, "") || Objects.equals(pass, "") || email==null || pass==null) {
             //Login form
@@ -90,20 +82,15 @@ public class IndexController {
                     "</div>";
         }
         else{
-            User checkUser;
-            try{
-                checkUser = userService.getUserByEmail(email);
-            }catch (Exception e){
-                checkUser = null;
-            }
+            User checkUser = getCheckUser();
             if (checkUser!=null && Objects.equals(checkUser.getEmail(), email) && Objects.equals(checkUser.getPassword(), pass)) {
                 userJsp = checkUser;
-                sign = "<a href=\"/out\">Sign out</a></form>";
+                sign = "<a href=\"/out\">Sign out (" + userJsp.getName() + ")</a>";
                 //Hello User
                 lform = "<div class=\"container fo\">\n" +
                         "  <form action=\"/\" method=\"POST\" name=\"model\">\n" +
                         "    <div class=\"form-group row\">\n<br>" +
-                        "      <label for=\"email\" class=\"col-sm-6 col-form-label col-sm-offset-3 centered\">Hello " +
+                        "      <label for=\"email\" class=\"col-sm-6 col-form-label col-sm-offset-3 centered\">Hello, " +
                         userJsp.getName() + "!<br>You can do your job</label>\n" +
                         "    </div>\n" +
                         "    <div class=\"form-group row\">\n" +
@@ -115,41 +102,29 @@ public class IndexController {
                         "</div>";
             }
         }
-
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("index");
-        modelAndView.addObject("links",
-                "<li><a href=\"/\">Home</a></li>\n" +
-                        "<li class=\"active\">" + sign + "</li>\n" +
-                        "<li><a href=\"/register\">Register</a></li>\n");
-        modelAndView.addObject("lform", lform);
-        modelAndView.addObject("titl", "Login");
-        modelAndView.addObject("userJSP", userJsp);
-
-        return modelAndView;
+        titl = "Login";
+        li =    "<li><a href=\"/\">Home</a></li>\n" +
+                "<li class=\"active\">" + sign + "</li>\n" +
+                "<li><a href=\"/register\">Register</a></li>\n";
+        return getModelAndView(userJsp);
     }
 
     @RequestMapping(value = "/out")
-    public ModelAndView indexOut(@ModelAttribute("userJSP") User user) {
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("index");
-        modelAndView.addObject("links",
-                "<li class=\"active\"><a href=\"/\">Home</a></li>\n" +
-                        "<li><a href=\"/login\">Sign in</a></li>\n" +
-                        "<li><a href=\"/register\">Register</a></li>");
-        modelAndView.addObject("titl", "Login");
-        modelAndView.addObject("userJSP", new User());
-        return modelAndView;
+    public ModelAndView indexOut(@ModelAttribute("userJSP") User userJsp) {
+        sign = in;
+        lform = "";
+        titl = "Logout";
+        li =    "<li class=\"active\"><a href=\"/\">Home</a></li>\n" +
+                "<li>" + sign + "</li>\n" +
+                "<li><a href=\"/register\">Register</a></li>\n";
+        return getModelAndView(new User());
     }
 
     @RequestMapping("/register")
     public ModelAndView indexRegister(@ModelAttribute("userJSP") User userJsp){
-
-        String email = userJsp.getEmail();
-        String pass = userJsp.getPassword();
-        String lform;
-        String sign = "<a href=\"/login\">Sign in</a>";
-
+        email = userJsp.getEmail();
+        pass = userJsp.getPassword();
+        sign = in;
         if (Objects.equals(email, "") || Objects.equals(pass, "") || email==null || pass==null) {
             //Register form
             lform = "<div class=\"container fo\">\n" +
@@ -178,18 +153,14 @@ public class IndexController {
                     "</div>";
         }
         else{
-            User checkUser;
-            try{
-                checkUser = userService.getUserByEmail(email);
-            }catch (Exception e){
-                checkUser = null;
-            }
+            User checkUser = getCheckUser();
             if (checkUser!=null && Objects.equals(checkUser.getEmail(), email)){
                 //User exist form
                 lform = "<div class=\"container fo\">\n" +
                         "  <form action=\"/register\" method=\"POST\" name=\"model\">\n" +
                         "    <div class=\"form-group row\">\n<br>" +
-                        "      <label for=\"email\" class=\"col-sm-6 col-form-label col-sm-offset-3 centered\">User " + checkUser.getName() + " is exist</label>\n" +
+                        "      <label for=\"email\" class=\"col-sm-6 col-form-label col-sm-offset-3 centered\">User " +
+                        checkUser.getName() + " is exist</label>\n" +
                         "    <input type=\"hidden\" id=\"email\" name=\"email\" value=\"\"></div>\n" +
                         "    <div class=\"form-group row\">\n" +
                         "      <div class=\"col-sm-offset-3 col-sm-6 centered\">\n" +
@@ -206,12 +177,13 @@ public class IndexController {
                 userJsp.setName(email.split("@")[0]); //Lets simply use nikname as name
                 try{
                     userService.addNewUser(userJsp);
-                    sign = "<a href=\"/out\">Sign out</a></form>";
+                    sign = "<a href=\"/out\">Sign out (" + userJsp.getName() + ")</a>";
                     //User was added successful form
                     lform = "<div class=\"container fo\">\n" +
                             "  <form action=\"/login\" method=\"POST\" name=\"model\">\n" +
                             "    <div class=\"form-group row\">\n<br>" +
-                            "      <label for=\"email\" class=\"col-sm-6 col-form-label col-sm-offset-3 centered\">New user " + email + " was added successful</label>\n" +
+                            "      <label for=\"email\" class=\"col-sm-6 col-form-label col-sm-offset-3 centered\">New user " +
+                            email + " was added successful</label>\n" +
                             "    </div>\n" +
                             "    <div class=\"form-group row\">\n" +
                             "      <div class=\"col-sm-offset-3 col-sm-6 centered\">\n" +
@@ -225,7 +197,8 @@ public class IndexController {
                     lform = "<div class=\"container fo\">\n" +
                             "  <form action=\"/register\" method=\"POST\" name=\"model\">\n" +
                             "    <div class=\"form-group row\">\n<br>" +
-                            "      <label for=\"email\" class=\"col-sm-6 col-form-label col-sm-offset-3 centered\">New user " + email + " is not added</label>\n" +
+                            "      <label for=\"email\" class=\"col-sm-6 col-form-label col-sm-offset-3 centered\">New user " +
+                            email + " is not added</label>\n" +
                             "    <input type=\"hidden\" id=\"email\" name=\"email\" value=\"\"></div>\n" +
                             "    <div class=\"form-group row\">\n" +
                             "      <div class=\"col-sm-offset-3 col-sm-6 centered\">\n" +
@@ -237,17 +210,32 @@ public class IndexController {
                 }
             }
         }
+        titl = "Add new user";
+        li =    "<li><a href=\"/\">Home</a></li>\n" +
+                "<li>" + sign + "</li>\n" +
+                "<li class=\"active\"><a href=\"/register\">Register</a></li>\n";
+        return getModelAndView(userJsp);
+    }
 
+    private User getCheckUser() {
+        User checkUser;
+        try{
+            checkUser = userService.getUserByEmail(email);
+        }catch (Exception e){
+            checkUser = null;
+        }
+        return checkUser;
+    }
+
+    private ModelAndView getModelAndView(@ModelAttribute("userJSP") User userJsp){
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("index");
-        modelAndView.addObject("links",
-                "<li><a href=\"/\">Home</a></li>\n" +
-                        "<li>" + sign + "</li>\n" +
-                        "<li class=\"active\"><a href=\"/register\">Register</a></li>\n");
+        modelAndView.addObject("links", li);
         modelAndView.addObject("lform", lform);
-        modelAndView.addObject("titl", "Add new user");
-        modelAndView.addObject("userJSP", userJsp);
-
+        modelAndView.addObject("titl", titl);
+        if (Objects.equals(userJsp.getEmail(), "") || userJsp.getEmail()==null){
+            modelAndView.addObject("userJSP", new User());
+        }
         return modelAndView;
     }
 }

@@ -2,6 +2,7 @@
 <html>
 <head>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="shortcut icon" href="res/img/original.png" type="image/png">
   <title>${titl}</title>
   <link rel="stylesheet" type="text/css" href="res/css/bootstrap.css">
   <link rel="stylesheet" type="text/css" href="res/css/font-awesome.min.css">

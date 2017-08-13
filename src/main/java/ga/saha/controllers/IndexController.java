@@ -154,14 +154,16 @@ public class IndexController {
         }
         else{
             User checkUser = getCheckUser();
-            if (checkUser!=null && Objects.equals(checkUser.getEmail(), email)){
+            if (checkUser!=null && Objects.equals(checkUser.getEmail(), email) && Objects.equals(checkUser.getPassword(), pass)){
+                userJsp = checkUser;
+                sign = "<a href=\"/out\">Sign out (" + userJsp.getName() + ")</a>";
                 //User exist form
                 lform = "<div class=\"container fo\">\n" +
-                        "  <form action=\"/register\" method=\"POST\" name=\"model\">\n" +
+                        "  <form action=\"/\" method=\"POST\" name=\"model\">\n" +
                         "    <div class=\"form-group row\">\n<br>" +
                         "      <label for=\"email\" class=\"col-sm-6 col-form-label col-sm-offset-3 centered\">User " +
-                        checkUser.getName() + " is exist</label>\n" +
-                        "    <input type=\"hidden\" id=\"email\" name=\"email\" value=\"\"></div>\n" +
+                        userJsp.getName() + " is exist.<br>Please loguot firstly.</label>\n" +
+                        "    <input type=\"hidden\" id=\"email\" name=\"email\" value=\"" + email + "\"></div>\n" +
                         "    <div class=\"form-group row\">\n" +
                         "      <div class=\"col-sm-offset-3 col-sm-6 centered\">\n" +
                         "        <button type=\"submit\" class=\"btn btn-primary\">Continue</button>\n" +

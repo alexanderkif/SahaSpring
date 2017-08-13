@@ -3,7 +3,7 @@ package ga.saha.entitys;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "users", schema = "public", catalog = "db5g9j38hag412")
+@Table(name = "users", catalog = "u5372sakf_test")
 public class User {
     private int idUser;
     private String name;

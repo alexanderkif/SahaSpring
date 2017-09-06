@@ -78,7 +78,6 @@ public class WebAppConfig extends WebMvcConfigurerAdapter{
         properties.put(AvailableSettings.STORAGE_ENGINE, env.getRequiredProperty("hibernate.dialect.storage_engine"));
         properties.put(AvailableSettings.SHOW_SQL, env.getRequiredProperty("hibernate.show_sql"));
         properties.put(AvailableSettings.FORMAT_SQL, env.getRequiredProperty("hibernate.format_sql"));
-        properties.put(AvailableSettings.STATEMENT_BATCH_SIZE, env.getRequiredProperty("hibernate.batch.size"));
         properties.put(AvailableSettings.HBM2DDL_AUTO, env.getRequiredProperty("hibernate.hbm2ddl.auto"));
         properties.put(AvailableSettings.CURRENT_SESSION_CONTEXT_CLASS, env.getRequiredProperty("hibernate.current.session.context.class"));
         return properties;

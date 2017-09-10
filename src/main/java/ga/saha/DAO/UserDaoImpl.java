@@ -20,7 +20,7 @@ public class UserDaoImpl implements UserDao {
     }
 
     public Session getSession() {
-        return this.sessionFactory.getCurrentSession();
+        return sessionFactory.getCurrentSession();
     }
 
     @Override

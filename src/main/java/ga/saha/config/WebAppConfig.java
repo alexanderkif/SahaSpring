@@ -8,7 +8,6 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
-import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.hibernate5.HibernateTransactionManager;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
@@ -29,11 +28,6 @@ import java.util.Properties;
 @PropertySource(value = { "classpath:database.properties" })
 public class WebAppConfig extends WebMvcConfigurerAdapter{
 
-    @Autowired
-    public WebAppConfig(Environment env) {
-        this.env = env;
-    }
-
     // Позволяет видеть все ресурсы в папке res, такие как картинки, стили и т.п.
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
@@ -51,7 +45,13 @@ public class WebAppConfig extends WebMvcConfigurerAdapter{
         return resolver;
     }
 
+
+    @Autowired
+    public WebAppConfig(Environment env) {
+        this.env = env;
+    }
     private final Environment env;
+
     @Bean
     public DataSource getDataSource() {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
@@ -71,11 +71,6 @@ public class WebAppConfig extends WebMvcConfigurerAdapter{
         return sessionFactory;
     }
 
-    @Bean
-    public PersistenceExceptionTranslationPostProcessor exceptionTranslation() {
-        return new PersistenceExceptionTranslationPostProcessor();
-    }
-
     private Properties getHibernateProperties() {
         Properties properties = new Properties();
         properties.put(AvailableSettings.DIALECT, env.getRequiredProperty("hibernate.dialect"));
@@ -87,7 +82,6 @@ public class WebAppConfig extends WebMvcConfigurerAdapter{
     }
 
     @Bean
-    @Autowired
     public HibernateTransactionManager transactionManager(SessionFactory sessionFactory) {
         HibernateTransactionManager txManager = new HibernateTransactionManager();
         txManager.setSessionFactory(sessionFactory);

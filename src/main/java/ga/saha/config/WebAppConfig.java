@@ -29,6 +29,11 @@ import java.util.Properties;
 @PropertySource(value = { "classpath:database.properties" })
 public class WebAppConfig extends WebMvcConfigurerAdapter{
 
+    @Autowired
+    public WebAppConfig(Environment env) {
+        this.env = env;
+    }
+
     // Позволяет видеть все ресурсы в папке res, такие как картинки, стили и т.п.
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
@@ -46,8 +51,7 @@ public class WebAppConfig extends WebMvcConfigurerAdapter{
         return resolver;
     }
 
-    @Autowired
-    private Environment env;
+    private final Environment env;
     @Bean
     public DataSource getDataSource() {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
@@ -75,7 +79,6 @@ public class WebAppConfig extends WebMvcConfigurerAdapter{
     private Properties getHibernateProperties() {
         Properties properties = new Properties();
         properties.put(AvailableSettings.DIALECT, env.getRequiredProperty("hibernate.dialect"));
-        properties.put(AvailableSettings.STORAGE_ENGINE, env.getRequiredProperty("hibernate.dialect.storage_engine"));
         properties.put(AvailableSettings.SHOW_SQL, env.getRequiredProperty("hibernate.show_sql"));
         properties.put(AvailableSettings.FORMAT_SQL, env.getRequiredProperty("hibernate.format_sql"));
         properties.put(AvailableSettings.HBM2DDL_AUTO, env.getRequiredProperty("hibernate.hbm2ddl.auto"));

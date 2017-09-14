@@ -1,6 +1,6 @@
 package ga.saha.controllers;
 
-import ga.saha.entitys.User;
+import ga.saha.entities.User;
 import ga.saha.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -12,10 +12,11 @@ import org.springframework.web.servlet.ModelAndView;
 import java.util.Objects;
 
 @Controller
+@RequestMapping("/")
 @SessionAttributes(value = "userJSP")
 public class IndexController {
 
-    private final UserService userService;
+    private UserService userService;
     private String lform;
     private String email;
     private String pass;
@@ -23,6 +24,8 @@ public class IndexController {
     private String sign = in;
     private String titl;
     private String li;
+
+    public IndexController() {}
 
     @Autowired
     public IndexController(UserService userService) {
@@ -176,9 +179,10 @@ public class IndexController {
                 userJsp = new User();
                 userJsp.setEmail(email);
                 userJsp.setPassword(pass);
+                userJsp.setId(0);
                 userJsp.setName(email.split("@")[0]); //Lets simply use nikname as name
                 try{
-                    userService.addNewUser(userJsp);
+                    userService.addUser(userJsp);
                     sign = "<a href=\"/out\">Sign out (" + userJsp.getName() + ")</a>";
                     //User was added successful form
                     lform = "<div class=\"container fo\">\n" +
@@ -222,7 +226,7 @@ public class IndexController {
     private User getCheckUser() {
         User checkUser;
         try{
-            checkUser = userService.getUserByEmail(email);
+            checkUser = userService.findByEmail(email);
         }catch (Exception e){
             checkUser = null;
         }

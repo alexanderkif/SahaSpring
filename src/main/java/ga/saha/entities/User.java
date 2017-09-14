@@ -1,25 +1,26 @@
-package ga.saha.entitys;
+package ga.saha.entities;
 
 import javax.persistence.*;
 
 @Entity
 @Table(name = "users", catalog = "u5372sakf_test")
 public class User {
-    private int idUser;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Integer id;
     private String name;
     private String password;
     private String email;
     private Boolean checked;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id_user", updatable = false, nullable = false)
-    public int getIdUser() {
-        return idUser;
+    @Column(name = "id")
+    public int getId() {
+        return id;
     }
 
-    public void setIdUser(int idUser) {
-        this.idUser = idUser;
+    public void setId(int id) {
+        this.id = id;
     }
 
     @Basic
@@ -65,7 +66,7 @@ public class User {
     @Override
     public String toString() {
         return "User{" +
-                "idUser=" + idUser +
+                "id=" + id +
                 ", name='" + name + '\'' +
                 ", password='" + password + '\'' +
                 ", email='" + email + '\'' +

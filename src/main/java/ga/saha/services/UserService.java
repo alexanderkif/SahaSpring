@@ -1,10 +1,24 @@
 package ga.saha.services;
 
-import ga.saha.entitys.User;
+import ga.saha.entities.User;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
-public interface UserService {
+@Service
+public class UserService {
 
-    User getUserByEmail(String email);
+    @Autowired
+    private UserRepository userRepository;
 
-    void addNewUser(User user);
+    public UserService() {}
+
+    public User findByEmail(String email) {
+        return userRepository.findByEmail(email);
+    }
+
+    public void addUser(User user) {
+        userRepository.save(user);
+    }
+
 }
+

@@ -1,32 +1,13 @@
 package ga.saha.config;
 
-import org.springframework.web.WebApplicationInitializer;
-import org.springframework.web.context.ContextLoaderListener;
-import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
-import org.springframework.web.servlet.DispatcherServlet;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.ComponentScan;
 
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRegistration;
-
-public class Initializer implements WebApplicationInitializer {
-
-    // Указываем имя нашему Servlet Dispatcher для мапинга
-    private static final String DISPATCHER_SERVLET_NAME = "dispatcher";
-
-    @Override
-    public void onStartup(ServletContext servletContext) throws ServletException {
-        AnnotationConfigWebApplicationContext ctx = new AnnotationConfigWebApplicationContext();
-
-        // Регистрируем в контексте конфигурационный класс
-        ctx.register(WebAppConfig.class);
-        servletContext.addListener(new ContextLoaderListener(ctx));
-
-        ctx.setServletContext(servletContext);
-
-        ServletRegistration.Dynamic servlet = servletContext.addServlet(DISPATCHER_SERVLET_NAME,
-                new DispatcherServlet(ctx));
-        servlet.addMapping("/");
-        servlet.setLoadOnStartup(1);
-    }
+@SpringBootApplication
+@ComponentScan("ga.saha")
+public class Initializer {
+        public static void main(String[] args) {
+            SpringApplication.run(Initializer.class, args);
+        }
 }

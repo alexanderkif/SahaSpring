@@ -1,1 +1,1 @@
-web: java -jar target/SahaSpring-1.0-SNAPSHOT.jar
+java -Dserver.port=$PORT $JAVA_OPTS -jar target/SahaSpring-1.0-SNAPSHOT.jar

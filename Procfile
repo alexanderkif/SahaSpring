@@ -1,1 +1,1 @@
-java -jar target/*.jar
+web: java -jar target/SahaSpring-1.0-SNAPSHOT.jar

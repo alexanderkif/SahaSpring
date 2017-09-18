@@ -3,28 +3,31 @@ package ga.saha.entities;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "users", catalog = "u5372sakf_test")
+@Table(name = "users")
 public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "id")
     private Integer id;
+    @Column(name = "name")
     private String name;
+    @Column(name = "password")
     private String password;
+    @Column(name = "email")
     private String email;
+    @Column(name = "checked")
     private Boolean checked;
 
-    @Column(name = "id")
-    public int getId() {
+
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
-    @Basic
-    @Column(name = "name", length = 15)
     public String getName() {
         return name;
     }
@@ -33,8 +36,6 @@ public class User {
         this.name = name;
     }
 
-    @Basic
-    @Column(name = "password", length = 15)
     public String getPassword() {
         return password;
     }
@@ -43,8 +44,6 @@ public class User {
         this.password = password;
     }
 
-    @Basic
-    @Column(name = "email", length = 30)
     public String getEmail() {
         return email;
     }
@@ -53,8 +52,6 @@ public class User {
         this.email = email;
     }
 
-    @Basic
-    @Column(name = "checked")
     public Boolean getChecked() {
         return checked;
     }
